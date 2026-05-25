@@ -1,0 +1,50 @@
+title	id
+Build一个Claude Code-01：CircleLoop	IBcSjuXRv0HPhQXhTE8Tcw
+摩擦01：用户动机、约束即产品、非标锚点	4NSIvsU_SbTeUHzH5U9VUw
+解耦 Claude Code：简洁、分治、隔离	54W23SpqzLJlfYXJdRScoA
+反身性 · 对产品经理职业未来的一点思考	GhWXjwQjPdK2BL-BYQslaA
+扣子coze 的假 agent skills（技能商店）	G31AcSj3ukkYXVJheM9_gg
+AI-Agent交易社区的商业模式飞轮能转起来-以MuleRun 为例	Rm-H49iWYVVAIEkcuF_9jw
+内容社区：从淘宝的“贤者时间”到得物的“……”	5FjZY9C7bvACcqtoDVguGg
+拆解 Manus：MCP 与 Deep Research 的高耦合利用	oCG-PwGtR4MHOf3Nuw2FXw
+你用 cursor 三小时写的 app 赚到一百万了吗？	8ztFwbJIfJBxxg6rMQp5LA
+1万字逐步指南：如何从0增长到500万美元ARR并实现盈利	p64CpbX7AWXtt_qSBhNFIA
+"AI：'我替你学编程吧'，自制力：'我先走一步'"	b7aL7Z2SY2gZIv3nQPPwOQ
+Claude式的RPA+AI是伪需求吗？	eJiu5vSVihoVSyYHkgpnTQ
+转行AI-从Dify开始实践(4)-Agent详解	3Bqt5UWG5m9545wDUE_WhA
+PMF外的AI产品（3）-虚拟陪伴	hO9Qpm2nA_vsZ6Uln9tuQw
+转行AI-从Dify开始实践(3)-白话RAG	a1J_65q9YQX3SwujMKt0KA
+转行AI-从Dify开始实践	KSTSXLuQl5gC9a3tP3Pa1g
+AI产品经理平常看什么内容？	387Hr4V-NIeJQ6OUnufZjg
+PMF之外的AI产品（2）-AI旅行规划	1T2brEY9cUpbdTsa8Wibsw
+PMF外的AI产品-AI搜索	a7YWYhMwocKYde6H8kKvJA
+剥离AI，回归产品经理	ljW63joJP37C79tzKhU8XQ
+AI产品、副业、跨境 | 说干就干的执行力：一把拉开人与人之间差距的钩子	XiQKxK3eGfyR-_Vm6WP5Tw
+OpenAI的新功能：将用户“人”作为LLM与GPTs的润滑剂	6p8boQXLnouMHKwIpwTiVQ
+Function Call函数调用的详细步骤拆解	yHDpr7Rz9Umu-6qaPw389Q
+智谱ChatGLM4的Bug发现&与GPTs在Function Call上的差异	pm5HaQFJe4Z1-fD3PiHR-Q
+GPTs-Prompt攻防：使用Agent来防御	CQ2KMRxtdNOVsPYq7uh_Vg
+GPTs-Prompt攻防	Np2ds9f6on7ksLOVBdJJ2g
+从GPTs看Openai的野心	iBYOjVMrTdcHOTms9PtbNg
+AI中间件编排（2）-授渔还是给鱼？	6cJ8TiwhNlzexpumUXxp4w
+AI中间件编排（1）-两种目标导向	ehquyZpDUQfyzd6LMedAbA
+【重磅】Google又被掐了：ChatGPT4.5力压Gemini	DVTI94b1kIroDMDZE8UhIw
+【深度验证】Gemini Pro：是真实力还是假肌肉？	ehM-n-DUdwCR_Ea-lzR52g
+【AI总结类产品】：是噱头还是价值？	ybyYYOfvc4wUQqrpqGd5EA
+如何从 0-1 快速搭建 RAG（4）——语义检索&混合检索&重排序 Rerank	PCUVU5LJZy3nNBXAScU-Rw
+【与总裁对话后】：自我表达的检讨与 AI 底层原理的趋同性发现	nqCuCbhPYzA2B3h1uKMAEg
+【重磅详解】Gemini：对Openai贴脸开大的Google多模态大模型	IjwRAaklAS8DLJ_zyxAfKA
+RAG就和买菜做饭一般容易（3）：如何从0-1快速搭建一套RAG——嵌入向量化	xhFfsiLoKI2FHViqDJ3aGQ
+RAG就和买菜做饭一般容易（2）：如何从0-1快速搭建RAG——文本分块	saXBXpHonFNENCZKF9O0sQ
+RAG就和买菜做饭一般容易（1）：如何从0-1快速搭建一套RAG——文档解析	DyMFcZX4mp3WcQPu7DSLiA
+通俗解释下Openai的Q*究竟是什么？	Or_3VgyLItnNyTiF2H90Lw
+AI产品的壁垒究竟在哪里？	KdXD86fweXT06uqiw8n3JA
+为什么是微软赶走了Sam Altman？	InLgz6f_oALFy3xGm-l3Kw
+深入探究OpenAI更新-技术上的三叉戟	C315NYsclHP_QMcBoMsUvw
+解析AI大模型的联网搜索-2-种方案	HK1WSuOQ67sdsWu1JLwsow
+OpenAI的下一步-OS	6CnWBHzE4zlZmHzsnLmPpg
+AI产品-好的垂直场景是一个好故事的开始	efjc5kKWO8azPunVK39uzw
+探究大模型问答的本质差异：RAG-Memory-Fine-Tuning	e7B8P3yo3n8P2NjXM-XIEw
+AI产品创业路径上的一点思考	7gyqA1efWdtL2FQN_6eFDA
+产品工作中的AI-Agent一点思考	x-5YvjTlNF61DFjAhDaW3Q
+AI与硬件的"中餐"和'西餐"	dGO3u_YhWl73WV6Rnu8rJQ
