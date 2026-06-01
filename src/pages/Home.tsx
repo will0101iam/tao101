@@ -1,15 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Link as LinkIcon } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
-import { BLOG_POSTS } from "@/data";
+import {
+  getPublishedPostsInitial,
+  getPublishedProductsInitial,
+  listPublishedPosts,
+  listPublishedProducts,
+} from "@/lib/publicContent";
+import type { CmsPost, CmsProduct } from "@/types/content";
 
 export default function Home() {
+  const [blogPosts, setBlogPosts] = useState<CmsPost[]>(() => getPublishedPostsInitial());
+  const [products, setProducts] = useState<CmsProduct[]>(() => getPublishedProductsInitial());
+  const [loadingPosts, setLoadingPosts] = useState(blogPosts.length === 0);
+  const [loadingProducts, setLoadingProducts] = useState(products.length === 0);
   const [visibleCount, setVisibleCount] = useState(3);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadPublishedContent() {
+      try {
+        const [nextPosts, nextProducts] = await Promise.all([
+          listPublishedPosts(),
+          listPublishedProducts(),
+        ]);
+
+        if (!active) {
+          return;
+        }
+
+        setBlogPosts(nextPosts);
+        setProducts(nextProducts);
+      } catch {
+        if (!active) {
+          return;
+        }
+      } finally {
+        if (!active) {
+          return;
+        }
+        setLoadingPosts(false);
+        setLoadingProducts(false);
+      }
+    }
+
+    loadPublishedContent();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleLoadMore = (e: React.MouseEvent) => {
     e.preventDefault();
-    setVisibleCount(prev => Math.min(prev + 3, BLOG_POSTS.length));
+    setVisibleCount((prev) => Math.min(prev + 3, blogPosts.length));
   };
 
   return (
@@ -17,29 +62,29 @@ export default function Home() {
       {/* HERO SECTION */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-24 md:py-32 lg:py-40">
         <div className="max-w-[500px] mx-auto w-full">
-          <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-6 uppercase">
-            REY TAO
+          <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-[74px] uppercase">
+            GUOTAO TAO
           </h5>
-          <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-8">
+          <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-[102px]">
             Build.<br />
             Break.<br />
             Repeat.
           </h2>
-          <p className="text-[18px] text-[#e8e8e8] mb-10 leading-[25.2px] font-['Poppins']">
+          <p className="text-[18px] text-[#e8e8e8] mb-[50px] leading-[25.2px] font-['Poppins']">
             Exploring the intersection of AI, product design, and continuous learning. I build tools and share insights on navigating the digital frontier.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <a
-              href="#blog"
-              className="inline-flex items-center justify-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300"
-            >
-              Read My Writings
-            </a>
             <a
               href="#products"
               className="inline-flex items-center justify-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300"
             >
               Explore My Products
+            </a>
+            <a
+              href="#blog"
+              className="inline-flex items-center justify-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300"
+            >
+              Read My Writings
             </a>
           </div>
         </div>
@@ -52,109 +97,48 @@ export default function Home() {
             PRODUCTS
           </h5>
           <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-            Tools I've Built
+            Manifesting Necessity
           </h2>
           <p className="text-[18px] text-[#e8e8e8] leading-[25.2px] font-['Poppins']">
             Vibe coding experiments, AI agents, and practical tools to accelerate your workflow.
           </p>
         </div>
 
-        <div className="max-w-[1200px] mx-auto">
-          {/* Featured Product */}
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-32">
-            <div className="order-2 md:order-1">
-              <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-4 uppercase">
-                PRE-ORDER NOW
-              </h5>
-              <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-                The Art Of Focus Keepsake Edition
-              </h2>
-              <p className="text-[18px] text-[#e8e8e8] mb-10 leading-[25.2px] font-['Poppins']">
-                <strong>Only 2,000 copies available.</strong> Find meaning, reinvent yourself, and create your ideal future with a once in a lifetime opportunity.
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-[20px] gap-y-[30px] max-w-[1200px] mx-auto w-full px-6">
+          {products.map((product) => (
+            <Link to={`/product/${product.slug}`} key={product.id} className="block group">
+              <div className="mb-6 overflow-hidden">
+                {product.coverImage ? (
+                  <img
+                    src={product.coverImage}
+                    alt={product.title}
+                    className="w-full aspect-video object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full aspect-video bg-white/5" />
+                )}
+              </div>
+              <div className="h-[66px] overflow-hidden">
+                <h3 className="font-['Poppins'] font-[800] text-[22px] leading-[33px] text-[#ffffff] line-clamp-2">
+                  {product.title}
+                </h3>
+              </div>
+              <p className="text-[18px] leading-[27px] text-[#e8e8e8] mb-6 h-[27px] truncate lowercase">
+                {product.excerpt}
               </p>
-              <a
-                href="#"
-                className="inline-flex items-center justify-center bg-[#e0c787] border border-[#e0c787] text-white px-[24px] py-[12px] text-[15px] font-semibold hover:bg-[#efefef] hover:text-[#e0c787] hover:border-[#efefef] transition-colors duration-300"
-              >
-                Pre-Order Now
-              </a>
-            </div>
-            <div className="order-1 md:order-2">
-              <img 
-                src="https://thedankoe.com/wp-content/uploads/2023/10/1-square-768x768.jpg" 
-                alt="Keepsake Box" 
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
 
-          {/* Other Resources Grid */}
-          <div className="grid md:grid-cols-2 gap-x-[30px] gap-y-16">
-            <div className="flex flex-col">
-              <a href="#" className="block mb-6 overflow-hidden">
-                <img src="https://thedankoe.com/wp-content/uploads/2022/04/featured-1024x576.jpg" alt="Future Proof" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
-              </a>
-              <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-4">
-                Future Proof - Premium Guides
-              </h3>
-              <p className="text-[#e8e8e8] text-[18px] leading-[25.2px] mb-6 flex-grow font-['Poppins']">
-                <strong>My personal content creation, marketing, and AI systems</strong> I used as a creator and founder, updated 2-4x a month.
-              </p>
-              <div>
-                <a href="#" className="inline-flex items-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300">
-                  <LinkIcon className="w-4 h-4" /> Join Future Proof
-                </a>
+              <div className="border-b border-[#e8e8e8]/20 pb-4">
+                <span className="font-['Poppins'] font-[700] text-[18px] text-[#ffffff] underline underline-offset-2 decoration-[1.5px] capitalize">
+                  Explore Tool
+                </span>
               </div>
+            </Link>
+          ))}
+          {!loadingProducts && products.length === 0 ? (
+            <div className="md:col-span-2 border border-white/10 px-6 py-12 text-center text-white/60">
+              No published products yet.
             </div>
-            <div className="flex flex-col">
-              <a href="#" className="block mb-6 overflow-hidden">
-                <img src="https://thedankoe.com/wp-content/uploads/2025/12/Featured-Homepage-1024x576.png" alt="Eden" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
-              </a>
-              <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-4">
-                Eden – AI Canvas & Drive
-              </h3>
-              <p className="text-[#e8e8e8] text-[18px] leading-[25.2px] mb-6 flex-grow font-['Poppins']">
-                Upload files, YouTube links, and more to a <strong>better drive</strong> that can always find what you need. Connect anything to AI on a visual canvas.
-              </p>
-              <div>
-                <a href="#" className="inline-flex items-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300">
-                  <LinkIcon className="w-4 h-4" /> Try Eden
-                </a>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <a href="#" className="block mb-6 overflow-hidden">
-                <img src="https://thedankoe.com/wp-content/uploads/2025/03/featured-3-1024x576.jpg" alt="Purpose & Profit" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
-              </a>
-              <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-4">
-                Purpose & Profit
-              </h3>
-              <p className="text-[#e8e8e8] text-[18px] leading-[25.2px] mb-6 flex-grow font-['Poppins']">
-                Transform your relationship with money and discover your life’s work. Download the PDF for free or get the paperback on Amazon.
-              </p>
-              <div>
-                <a href="#" className="inline-flex items-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300">
-                  <LinkIcon className="w-4 h-4" /> Get The Book
-                </a>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <a href="#" className="block mb-6 overflow-hidden">
-                <img src="https://thedankoe.com/wp-content/uploads/2023/12/main-featured-image-1024x576.jpg" alt="The Art Of Focus" className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
-              </a>
-              <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-4">
-                The Art Of Focus
-              </h3>
-              <p className="text-[#e8e8e8] text-[18px] leading-[25.2px] mb-6 flex-grow font-['Poppins']">
-                Find meaning, reinvent yourself, and create your ideal future. Now available on Amazon in digital, physical, or audiobook format.
-              </p>
-              <div>
-                <a href="#" className="inline-flex items-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300">
-                  <LinkIcon className="w-4 h-4" /> Get The Book
-                </a>
-              </div>
-            </div>
-          </div>
+          ) : null}
         </div>
       </section>
 
@@ -174,34 +158,48 @@ export default function Home() {
 
         <div className="max-w-[1200px] mx-auto">
           <div className="grid md:grid-cols-3 gap-x-[20px] gap-y-[30px] mb-16">
-            {BLOG_POSTS.slice(0, visibleCount).map((post, index) => (
-              <Link to={`/post/${post.id}`} key={index} className="group cursor-pointer block">
+            {blogPosts.slice(0, visibleCount).map((post) => (
+              <Link to={`/post/${post.slug}`} key={post.id} className="group cursor-pointer block">
                 <div className="overflow-hidden mb-6">
-                  <img 
-                    src={post.image} 
-                    alt="Blog Post" 
-                    className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {post.coverImage ? (
+                    <img
+                      src={post.coverImage}
+                      alt={post.title}
+                      className="w-full aspect-[4/3] object-cover transform group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full aspect-[4/3] bg-white/5" />
+                  )}
                 </div>
-                <h4 className="font-['Poppins'] font-[800] text-[22px] tracking-[-0.6px] text-[#ffffff] mb-3 group-hover:text-[#e8e8e8]/60 transition-colors">
-                  {post.title}
-                </h4>
-                <p className="text-[#ffffff] mb-6 text-[18px] leading-[27px] font-[400]">
-                  {post.excerpt}
-                </p>
+                <div className="h-[66px] mb-3 overflow-hidden">
+                  <h4 className="font-['Poppins'] font-[800] text-[22px] leading-[33px] tracking-[-0.6px] text-[#ffffff] group-hover:text-[#e8e8e8]/60 transition-colors line-clamp-2">
+                    {post.title}
+                  </h4>
+                </div>
+                <div className="h-[27px] mb-6 overflow-hidden">
+                  <p className="text-[#ffffff] text-[18px] leading-[27px] font-[400] truncate">
+                    {post.excerpt}
+                  </p>
+                </div>
                 <div className="flex flex-col border-b border-[#e8e8e8]/20 pb-4 mb-4">
                   <span className="text-[18px] capitalize text-[#ffffff] font-[700] group-hover:text-[#e8e8e8]/60 transition-colors inline-block underline underline-offset-2 decoration-[1.5px] decoration-[#ffffff] group-hover:decoration-[#e8e8e8]/60 self-start">Read Full Post</span>
                 </div>
                 <div className="flex items-center text-[14px] font-[400] text-[#e8e8e8] italic font-serif">
-                  <span>Rey Tao</span>
+                  <span>{post.authorName}</span>
                   <span className="mx-2 not-italic text-[12px]">•</span>
                   <span>{post.date}</span>
                 </div>
               </Link>
             ))}
           </div>
+
+          {!loadingPosts && blogPosts.length === 0 ? (
+            <div className="border border-white/10 px-6 py-12 text-center text-white/60 mb-16">
+              No published posts yet.
+            </div>
+          ) : null}
           
-          {visibleCount < BLOG_POSTS.length && (
+          {visibleCount < blogPosts.length && (
             <div className="text-center">
               <a
                 href="#"
@@ -222,7 +220,7 @@ export default function Home() {
             ABOUT ME
           </h5>
           <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-            Who Is Rey Tao?
+            Who Is Guotao Tao?
           </h2>
           <p className="text-[18px] text-[#e8e8e8] leading-[25.2px] font-['Poppins']">
             Just a human obsessed with humans.
@@ -243,7 +241,7 @@ export default function Home() {
             </div>
           </div>
           <div className="space-y-6 text-[#e8e8e8] text-[18px] leading-[25.2px]">
-            <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-6">Hey, I'm Rey Tao.</h3>
+            <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-6">Hey, I'm Guotao Tao.</h3>
             <p>
               I'm the creator of this space, and a writer obsessed with the mind, the internet, and the future.
             </p>

@@ -1,9 +1,9 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it } from "vitest";
-import { MemoryRouter } from "react-router-dom";
-import Home from "@/pages/Home";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import Product from "@/pages/Product";
 
-describe("homepage", () => {
+describe("Product page", () => {
   beforeEach(() => {
     const storage = (() => {
       const values = new Map<string, string>();
@@ -22,19 +22,19 @@ describe("homepage", () => {
     });
   });
 
-  it("renders the editorial landing structure", () => {
+  it("renders a published product from the content layer", () => {
     const html = renderToStaticMarkup(
-      <MemoryRouter>
-        <Home />
+      <MemoryRouter initialEntries={["/product/zen-terminal"]}>
+        <Routes>
+          <Route path="/product/:id" element={<Product />} />
+        </Routes>
       </MemoryRouter>,
     );
 
-    expect(html).toContain("Build.");
-    expect(html).toContain("Manifesting Necessity");
-    expect(html).toContain("THE BLOG");
-    expect(html).toContain("Explore Your Curiosity");
-    expect(html).toContain("Build一个Claude Code-01：CircleLoop");
     expect(html).toContain("Zen Terminal");
-    expect(html).toContain("Who Is Guotao Tao?");
+    expect(html).toContain("the command line, silenced.");
+    expect(html).toContain("May 12, 2026");
+    expect(html).toContain("Screenshot 1");
+    expect(html).not.toContain("Access Repository");
   });
 });

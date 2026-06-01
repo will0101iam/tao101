@@ -23,7 +23,7 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
               className="hidden md:flex px-5 py-2.5 text-[16px] leading-[20px] font-normal text-[#efefef] hover:text-white/60 transition-colors"
               href="#"
             >
-              Read The Rey Letters
+              Read The Tao Letters
             </a>
           </div>
         </div>
