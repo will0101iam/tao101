@@ -1,14 +1,25 @@
-import { BLOG_POSTS, PRODUCTS } from "@/data";
+import { BLOG_POSTS, PRODUCTS, SITE_SETTINGS } from "@/data";
 import { getSupabaseBrowserClient, isSupabaseEnabled } from "@/lib/supabase";
-import type { AdminSession, CmsPost, CmsProduct, PostInput, ProductInput } from "@/types/content";
+import type {
+  AdminSession,
+  CmsPost,
+  CmsProduct,
+  PostInput,
+  ProductInput,
+  SiteLink,
+  SiteSettings,
+  SiteSettingsInput,
+} from "@/types/content";
 
 export const CMS_POSTS_KEY = "cms-posts";
 export const CMS_PRODUCTS_KEY = "cms-products";
+export const CMS_SITE_SETTINGS_KEY = "cms-site-settings";
 export const CMS_ADMIN_SESSION_KEY = "cms-admin-session";
 
 const DEFAULT_AUTHOR_NAME = "Guotao Tao";
 const LEGACY_COVER_MARKER = "thedankoe.com/wp-content/uploads";
 const WECHAT_PLACEHOLDER_MARKER = "mmbiz.qpic.cn/sz_mmbiz_";
+const DEFAULT_SITE_SETTINGS_ID = "default";
 
 function nowIso() {
   return new Date().toISOString();
@@ -45,6 +56,36 @@ function parseStringArray(value: unknown) {
     try {
       const parsed = JSON.parse(value) as unknown;
       return parseStringArray(parsed);
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+function parseSiteLinks(value: unknown): SiteLink[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => {
+        if (!entry || typeof entry !== "object") {
+          return null;
+        }
+
+        const label = "label" in entry ? String(entry.label ?? "").trim() : "";
+        const url = "url" in entry ? String(entry.url ?? "").trim() : "";
+        if (!label) {
+          return null;
+        }
+
+        return { label, url };
+      })
+      .filter((entry): entry is SiteLink => entry !== null);
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    try {
+      return parseSiteLinks(JSON.parse(value) as unknown);
     } catch {
       return [];
     }
@@ -197,6 +238,16 @@ function makeSeedProducts(): CmsProduct[] {
   }));
 }
 
+function makeSeedSiteSettings(): SiteSettings {
+  const stamp = nowIso();
+  return {
+    id: DEFAULT_SITE_SETTINGS_ID,
+    ...SITE_SETTINGS,
+    createdAt: stamp,
+    updatedAt: stamp,
+  };
+}
+
 function readCollection<T>(key: string, fallback: () => T[]): T[] {
   if (!canUseStorage()) {
     return fallback();
@@ -211,6 +262,27 @@ function readCollection<T>(key: string, fallback: () => T[]): T[] {
 
   try {
     return JSON.parse(raw) as T[];
+  } catch {
+    const seed = fallback();
+    localStorage.setItem(key, JSON.stringify(seed));
+    return seed;
+  }
+}
+
+function readSingleton<T>(key: string, fallback: () => T): T {
+  if (!canUseStorage()) {
+    return fallback();
+  }
+
+  const raw = localStorage.getItem(key);
+  if (!raw) {
+    const seed = fallback();
+    localStorage.setItem(key, JSON.stringify(seed));
+    return seed;
+  }
+
+  try {
+    return JSON.parse(raw) as T;
   } catch {
     const seed = fallback();
     localStorage.setItem(key, JSON.stringify(seed));
@@ -258,7 +330,70 @@ function readProductCollection() {
   return migrated;
 }
 
+function toStoredSiteSettings(row: Record<string, unknown>): SiteSettings {
+  return {
+    id: String(row.id ?? DEFAULT_SITE_SETTINGS_ID),
+    heroEyebrow: String(row.heroEyebrow ?? row.hero_eyebrow ?? ""),
+    heroTitle: String(row.heroTitle ?? row.hero_title ?? ""),
+    heroDescription: String(row.heroDescription ?? row.hero_description ?? ""),
+    heroPrimaryCtaLabel: String(row.heroPrimaryCtaLabel ?? row.hero_primary_cta_label ?? ""),
+    heroPrimaryCtaUrl: String(row.heroPrimaryCtaUrl ?? row.hero_primary_cta_url ?? ""),
+    heroSecondaryCtaLabel: String(row.heroSecondaryCtaLabel ?? row.hero_secondary_cta_label ?? ""),
+    heroSecondaryCtaUrl: String(row.heroSecondaryCtaUrl ?? row.hero_secondary_cta_url ?? ""),
+    productsEyebrow: String(row.productsEyebrow ?? row.products_eyebrow ?? ""),
+    productsTitle: String(row.productsTitle ?? row.products_title ?? ""),
+    productsDescription: String(row.productsDescription ?? row.products_description ?? ""),
+    productsCardCtaLabel: String(row.productsCardCtaLabel ?? row.products_card_cta_label ?? "Explore Tool"),
+    productsEmptyState: String(row.productsEmptyState ?? row.products_empty_state ?? "No published products yet."),
+    blogEyebrow: String(row.blogEyebrow ?? row.blog_eyebrow ?? ""),
+    blogTitle: String(row.blogTitle ?? row.blog_title ?? ""),
+    blogDescription: String(row.blogDescription ?? row.blog_description ?? ""),
+    blogLoadMoreLabel: String(row.blogLoadMoreLabel ?? row.blog_load_more_label ?? "Load More"),
+    blogCardCtaLabel: String(row.blogCardCtaLabel ?? row.blog_card_cta_label ?? "Read Full Post"),
+    blogEmptyState: String(row.blogEmptyState ?? row.blog_empty_state ?? "No published posts yet."),
+    postLoadingLabel: String(row.postLoadingLabel ?? row.post_loading_label ?? "Loading post..."),
+    postNotFoundTitle: String(row.postNotFoundTitle ?? row.post_not_found_title ?? "Post not found"),
+    returnHomeLabel: String(row.returnHomeLabel ?? row.return_home_label ?? "Return to home"),
+    productLoadingLabel: String(row.productLoadingLabel ?? row.product_loading_label ?? "Loading product..."),
+    productNotFoundTitle: String(row.productNotFoundTitle ?? row.product_not_found_title ?? "Product not found"),
+    productScreenshotsTitle: String(row.productScreenshotsTitle ?? row.product_screenshots_title ?? "Screenshots"),
+    productScreenshotLabelPrefix: String(row.productScreenshotLabelPrefix ?? row.product_screenshot_label_prefix ?? "Screenshot"),
+    productPrimaryCtaFallbackLabel: String(row.productPrimaryCtaFallbackLabel ?? row.product_primary_cta_fallback_label ?? "Open Product"),
+    aboutEyebrow: String(row.aboutEyebrow ?? row.about_eyebrow ?? ""),
+    aboutTitle: String(row.aboutTitle ?? row.about_title ?? ""),
+    aboutDescription: String(row.aboutDescription ?? row.about_description ?? ""),
+    aboutAvatarUrl: String(row.aboutAvatarUrl ?? row.about_avatar_url ?? ""),
+    aboutIntroHeading: String(row.aboutIntroHeading ?? row.about_intro_heading ?? ""),
+    aboutParagraphs: parseStringArray(row.aboutParagraphs ?? row.about_paragraphs),
+    aboutSocialLinks: parseSiteLinks(row.aboutSocialLinks ?? row.about_social_links),
+    adminPostsEmptyState: String(row.adminPostsEmptyState ?? row.admin_posts_empty_state ?? "Select a post or create a new one."),
+    adminProductsEmptyState: String(row.adminProductsEmptyState ?? row.admin_products_empty_state ?? "Select a product or create a new one."),
+    adminProductNoDateLabel: String(row.adminProductNoDateLabel ?? row.admin_product_no_date_label ?? "No publish date"),
+    footerLogoUrl: String(row.footerLogoUrl ?? row.footer_logo_url ?? ""),
+    footerSlogan: String(row.footerSlogan ?? row.footer_slogan ?? ""),
+    footerDescription: String(row.footerDescription ?? row.footer_description ?? ""),
+    footerRightCopy: String(row.footerRightCopy ?? row.footer_right_copy ?? ""),
+    footerCopyright: String(row.footerCopyright ?? row.footer_copyright ?? ""),
+    footerSocialLinks: parseSiteLinks(row.footerSocialLinks ?? row.footer_social_links),
+    createdAt: String(row.createdAt ?? row.created_at ?? ""),
+    updatedAt: String(row.updatedAt ?? row.updated_at ?? ""),
+  };
+}
+
+function readSiteSettingsRecord() {
+  const settings = readSingleton<Record<string, unknown>>(CMS_SITE_SETTINGS_KEY, makeSeedSiteSettings);
+  return toStoredSiteSettings(settings);
+}
+
 function writeCollection<T>(key: string, value: T[]) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function writeSingleton<T>(key: string, value: T) {
   if (!canUseStorage()) {
     return;
   }
@@ -307,6 +442,10 @@ function toSupabaseProduct(row: Record<string, unknown>): CmsProduct {
   };
 }
 
+function toSupabaseSiteSettings(row: Record<string, unknown>): SiteSettings {
+  return toStoredSiteSettings(row);
+}
+
 export function getPublishedPostsSnapshot() {
   return readPostCollection().filter((post) => post.status === "published");
 }
@@ -323,12 +462,34 @@ export function getPublishedProductSnapshot(idOrSlug: string | undefined) {
   return getPublishedProductsSnapshot().find((product) => matchesRecord(idOrSlug, product));
 }
 
+export function getSiteSettingsInitial() {
+  return readSiteSettingsRecord();
+}
+
 export function getAdminPosts() {
   return readPostCollection().sort(compareAdminContentByRecency);
 }
 
 export function getAdminProducts() {
   return readProductCollection().sort(compareAdminContentByRecency);
+}
+
+export function readSiteSettings() {
+  return readSiteSettingsRecord();
+}
+
+export async function loadSiteSettings() {
+  if (!isSupabaseEnabled()) {
+    return readSiteSettingsRecord();
+  }
+
+  const client = getSupabaseBrowserClient();
+  const { data, error } = await client!.from("site_settings").select("*").eq("id", DEFAULT_SITE_SETTINGS_ID).maybeSingle();
+  if (error) {
+    throw error;
+  }
+
+  return data ? toSupabaseSiteSettings(data as Record<string, unknown>) : readSiteSettingsRecord();
 }
 
 export async function listPosts() {
@@ -355,6 +516,121 @@ export async function listProducts() {
     throw error;
   }
   return (data ?? []).map((row) => toSupabaseProduct(row as Record<string, unknown>)).sort(compareAdminContentByRecency);
+}
+
+export async function saveSiteSettings(input: SiteSettingsInput) {
+  const current = await loadSiteSettings().catch(() => readSiteSettingsRecord());
+  const mergedInput = {
+    ...current,
+    ...input,
+    id: input.id ?? current.id ?? DEFAULT_SITE_SETTINGS_ID,
+  };
+
+  if (!isSupabaseEnabled()) {
+    const record: SiteSettings = {
+      id: mergedInput.id,
+      heroEyebrow: mergedInput.heroEyebrow,
+      heroTitle: mergedInput.heroTitle,
+      heroDescription: mergedInput.heroDescription,
+      heroPrimaryCtaLabel: mergedInput.heroPrimaryCtaLabel,
+      heroPrimaryCtaUrl: mergedInput.heroPrimaryCtaUrl,
+      heroSecondaryCtaLabel: mergedInput.heroSecondaryCtaLabel,
+      heroSecondaryCtaUrl: mergedInput.heroSecondaryCtaUrl,
+      productsEyebrow: mergedInput.productsEyebrow,
+      productsTitle: mergedInput.productsTitle,
+      productsDescription: mergedInput.productsDescription,
+      productsCardCtaLabel: mergedInput.productsCardCtaLabel,
+      productsEmptyState: mergedInput.productsEmptyState,
+      blogEyebrow: mergedInput.blogEyebrow,
+      blogTitle: mergedInput.blogTitle,
+      blogDescription: mergedInput.blogDescription,
+      blogLoadMoreLabel: mergedInput.blogLoadMoreLabel,
+      blogCardCtaLabel: mergedInput.blogCardCtaLabel,
+      blogEmptyState: mergedInput.blogEmptyState,
+      postLoadingLabel: mergedInput.postLoadingLabel,
+      postNotFoundTitle: mergedInput.postNotFoundTitle,
+      returnHomeLabel: mergedInput.returnHomeLabel,
+      productLoadingLabel: mergedInput.productLoadingLabel,
+      productNotFoundTitle: mergedInput.productNotFoundTitle,
+      productScreenshotsTitle: mergedInput.productScreenshotsTitle,
+      productScreenshotLabelPrefix: mergedInput.productScreenshotLabelPrefix,
+      productPrimaryCtaFallbackLabel: mergedInput.productPrimaryCtaFallbackLabel,
+      aboutEyebrow: mergedInput.aboutEyebrow,
+      aboutTitle: mergedInput.aboutTitle,
+      aboutDescription: mergedInput.aboutDescription,
+      aboutAvatarUrl: mergedInput.aboutAvatarUrl,
+      aboutIntroHeading: mergedInput.aboutIntroHeading,
+      aboutParagraphs: mergedInput.aboutParagraphs,
+      aboutSocialLinks: mergedInput.aboutSocialLinks,
+      adminPostsEmptyState: mergedInput.adminPostsEmptyState,
+      adminProductsEmptyState: mergedInput.adminProductsEmptyState,
+      adminProductNoDateLabel: mergedInput.adminProductNoDateLabel,
+      footerLogoUrl: mergedInput.footerLogoUrl,
+      footerSlogan: mergedInput.footerSlogan,
+      footerDescription: mergedInput.footerDescription,
+      footerRightCopy: mergedInput.footerRightCopy,
+      footerCopyright: mergedInput.footerCopyright,
+      footerSocialLinks: mergedInput.footerSocialLinks,
+      createdAt: current.createdAt || nowIso(),
+      updatedAt: nowIso(),
+    };
+
+    writeSingleton(CMS_SITE_SETTINGS_KEY, record);
+    return record;
+  }
+
+  const client = getSupabaseBrowserClient();
+  const payload = {
+    id: mergedInput.id,
+    hero_eyebrow: mergedInput.heroEyebrow,
+    hero_title: mergedInput.heroTitle,
+    hero_description: mergedInput.heroDescription,
+    hero_primary_cta_label: mergedInput.heroPrimaryCtaLabel,
+    hero_primary_cta_url: mergedInput.heroPrimaryCtaUrl,
+    hero_secondary_cta_label: mergedInput.heroSecondaryCtaLabel,
+    hero_secondary_cta_url: mergedInput.heroSecondaryCtaUrl,
+    products_eyebrow: mergedInput.productsEyebrow,
+    products_title: mergedInput.productsTitle,
+    products_description: mergedInput.productsDescription,
+    products_card_cta_label: mergedInput.productsCardCtaLabel,
+    products_empty_state: mergedInput.productsEmptyState,
+    blog_eyebrow: mergedInput.blogEyebrow,
+    blog_title: mergedInput.blogTitle,
+    blog_description: mergedInput.blogDescription,
+    blog_load_more_label: mergedInput.blogLoadMoreLabel,
+    blog_card_cta_label: mergedInput.blogCardCtaLabel,
+    blog_empty_state: mergedInput.blogEmptyState,
+    post_loading_label: mergedInput.postLoadingLabel,
+    post_not_found_title: mergedInput.postNotFoundTitle,
+    return_home_label: mergedInput.returnHomeLabel,
+    product_loading_label: mergedInput.productLoadingLabel,
+    product_not_found_title: mergedInput.productNotFoundTitle,
+    product_screenshots_title: mergedInput.productScreenshotsTitle,
+    product_screenshot_label_prefix: mergedInput.productScreenshotLabelPrefix,
+    product_primary_cta_fallback_label: mergedInput.productPrimaryCtaFallbackLabel,
+    about_eyebrow: mergedInput.aboutEyebrow,
+    about_title: mergedInput.aboutTitle,
+    about_description: mergedInput.aboutDescription,
+    about_avatar_url: mergedInput.aboutAvatarUrl,
+    about_intro_heading: mergedInput.aboutIntroHeading,
+    about_paragraphs: mergedInput.aboutParagraphs,
+    about_social_links: mergedInput.aboutSocialLinks,
+    admin_posts_empty_state: mergedInput.adminPostsEmptyState,
+    admin_products_empty_state: mergedInput.adminProductsEmptyState,
+    admin_product_no_date_label: mergedInput.adminProductNoDateLabel,
+    footer_logo_url: mergedInput.footerLogoUrl,
+    footer_slogan: mergedInput.footerSlogan,
+    footer_description: mergedInput.footerDescription,
+    footer_right_copy: mergedInput.footerRightCopy,
+    footer_copyright: mergedInput.footerCopyright,
+    footer_social_links: mergedInput.footerSocialLinks,
+  };
+
+  const { data, error } = await client!.from("site_settings").upsert(payload).select().single();
+  if (error) {
+    throw error;
+  }
+  return toSupabaseSiteSettings(data as Record<string, unknown>);
 }
 
 export async function savePost(input: PostInput) {

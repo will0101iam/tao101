@@ -21,6 +21,51 @@ type Product = {
   ctaUrl?: string;
 };
 
+type SiteSettingsSeed = {
+  heroEyebrow: string;
+  heroTitle: string;
+  heroDescription: string;
+  heroPrimaryCtaLabel: string;
+  heroPrimaryCtaUrl: string;
+  heroSecondaryCtaLabel: string;
+  heroSecondaryCtaUrl: string;
+  productsEyebrow: string;
+  productsTitle: string;
+  productsDescription: string;
+  productsCardCtaLabel: string;
+  productsEmptyState: string;
+  blogEyebrow: string;
+  blogTitle: string;
+  blogDescription: string;
+  blogLoadMoreLabel: string;
+  blogCardCtaLabel: string;
+  blogEmptyState: string;
+  postLoadingLabel: string;
+  postNotFoundTitle: string;
+  returnHomeLabel: string;
+  productLoadingLabel: string;
+  productNotFoundTitle: string;
+  productScreenshotsTitle: string;
+  productScreenshotLabelPrefix: string;
+  productPrimaryCtaFallbackLabel: string;
+  aboutEyebrow: string;
+  aboutTitle: string;
+  aboutDescription: string;
+  aboutAvatarUrl: string;
+  aboutIntroHeading: string;
+  aboutParagraphs: string[];
+  aboutSocialLinks: Array<{ label: string; url: string }>;
+  adminPostsEmptyState: string;
+  adminProductsEmptyState: string;
+  adminProductNoDateLabel: string;
+  footerLogoUrl: string;
+  footerSlogan: string;
+  footerDescription: string;
+  footerRightCopy: string;
+  footerCopyright: string;
+  footerSocialLinks: Array<{ label: string; url: string }>;
+};
+
 const koeCovers = [
   "https://thedankoe.com/wp-content/uploads/2025/08/featured-768x432.jpg",
   "https://thedankoe.com/wp-content/uploads/2025/07/featured-niche-768x432.jpg",
@@ -99,4 +144,62 @@ export const getProductById = (id: string | undefined) => {
     return undefined;
   }
   return PRODUCTS.find(product => product.id === id);
+};
+
+export const SITE_SETTINGS: SiteSettingsSeed = {
+  heroEyebrow: "GUOTAO TAO",
+  heroTitle: "Build.\nBreak.\nRepeat.",
+  heroDescription: "Exploring the intersection of AI, product design, and continuous learning. I build tools and share insights on navigating the digital frontier.",
+  heroPrimaryCtaLabel: "Explore My Products",
+  heroPrimaryCtaUrl: "#products",
+  heroSecondaryCtaLabel: "Read My Writings",
+  heroSecondaryCtaUrl: "#blog",
+  productsEyebrow: "THE PRODUCTS",
+  productsTitle: "Manifesting Necessity",
+  productsDescription: "Vibe coding experiments, AI agents, and tools built to serve me.",
+  productsCardCtaLabel: "Explore Tool",
+  productsEmptyState: "No published products yet.",
+  blogEyebrow: "THE BLOGS",
+  blogTitle: "Explore Your Curiosity",
+  blogDescription: "Deep dives on human potential, lifestyle design, & digital business.",
+  blogLoadMoreLabel: "Load More",
+  blogCardCtaLabel: "Read Full Post",
+  blogEmptyState: "No published posts yet.",
+  postLoadingLabel: "Loading post...",
+  postNotFoundTitle: "Post not found",
+  returnHomeLabel: "Return to home",
+  productLoadingLabel: "Loading product...",
+  productNotFoundTitle: "Product not found",
+  productScreenshotsTitle: "Screenshots",
+  productScreenshotLabelPrefix: "Screenshot",
+  productPrimaryCtaFallbackLabel: "Open Product",
+  aboutEyebrow: "ABOUT ME",
+  aboutTitle: "Who Is Guotao Tao?",
+  aboutDescription: "Just a human obsessed with humans.",
+  aboutAvatarUrl: "https://thedankoe.com/wp-content/uploads/2024/11/pfp23.jpg",
+  aboutIntroHeading: "Hey, I'm Guotao Tao.",
+  aboutParagraphs: [
+    "从事AI产品经理的工作，喜欢批判性的产品思考，喜欢研究用户行为和心理学。",
+    "梦想是早日退休，在自然中肆意的浪费时间。",
+    "做的速度跟不上开脑洞的速度，因此时常感到焦虑和轻微的挫败感，然后重新在已经跟账单一样长的 todolist 上继续写 todo，希望有一天能够清空这个账单，实现真正的自由。",
+    "ENTJ-A，双鱼座，自由度和话语权是性格的底色，没有这两样东西，无法激发 100% 性能。",
+  ],
+  aboutSocialLinks: [
+    { label: "微信公众号", url: "" },
+    { label: "小红书", url: "" },
+    { label: "Twitter", url: "" },
+  ],
+  adminPostsEmptyState: "Select a post or create a new one.",
+  adminProductsEmptyState: "Select a product or create a new one.",
+  adminProductNoDateLabel: "No publish date",
+  footerLogoUrl: "https://thedankoe.com/wp-content/uploads/2022/04/logo-white.png",
+  footerSlogan: "Build. Break. Repeat.",
+  footerDescription: "I dive deep into human potential, lifestyle design, and one-person businesses to give you a unique, digestible way of improving your life.",
+  footerRightCopy: "Gain A New Perspective On Life & Business",
+  footerCopyright: "© All Rights Reserved.",
+  footerSocialLinks: [
+    { label: "Twitter", url: "" },
+    { label: "Instagram", url: "" },
+    { label: "GitHub", url: "" },
+  ],
 };

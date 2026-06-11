@@ -8,6 +8,7 @@ import AdminLayout from "@/pages/admin/AdminLayout";
 import Login from "@/pages/admin/Login";
 import PostList from "@/pages/admin/PostList";
 import ProductList from "@/pages/admin/ProductList";
+import SettingsPage from "@/pages/admin/SettingsPage";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route index element={<Navigate replace to="/admin/posts" />} />
         <Route path="posts" element={<PostList />} />
         <Route path="products" element={<ProductList />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate replace to="/" />} />
     </Routes>

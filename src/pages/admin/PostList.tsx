@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import PostEditor from "@/pages/admin/PostEditor";
-import { deletePost, getAdminPosts, listPosts } from "@/lib/cms";
+import { deletePost, getAdminPosts, getSiteSettingsInitial, listPosts, loadSiteSettings } from "@/lib/cms";
 import { useSyncedAdminListHeight } from "@/hooks/useSyncedAdminListHeight";
-import type { CmsPost } from "@/types/content";
+import type { CmsPost, SiteSettings } from "@/types/content";
 
 export default function PostList() {
   const [posts, setPosts] = useState<CmsPost[]>([]);
   const [editing, setEditing] = useState<CmsPost | null>(null);
   const [creating, setCreating] = useState(false);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => getSiteSettingsInitial());
   const listShellRef = useRef<HTMLDivElement | null>(null);
   const editorColumnRef = useRef<HTMLDivElement | null>(null);
   const syncedListHeight = useSyncedAdminListHeight(listShellRef, editorColumnRef, [
@@ -18,6 +19,7 @@ export default function PostList() {
 
   useEffect(() => {
     listPosts().then(setPosts).catch(() => setPosts(getAdminPosts()));
+    loadSiteSettings().then(setSiteSettings).catch(() => setSiteSettings(getSiteSettingsInitial()));
   }, []);
 
   async function handleDelete(id: string) {
@@ -73,7 +75,7 @@ export default function PostList() {
         ) : editing ? (
           <PostEditor post={editing} onSaved={(post) => { setPosts(getAdminPosts()); setEditing(post); }} onCancel={() => setEditing(null)} />
         ) : (
-          <div className="border border-white/10 p-8 text-white/60">Select a post or create a new one.</div>
+          <div className="border border-white/10 p-8 text-white/60">{siteSettings.adminPostsEmptyState}</div>
         )}
       </div>
     </div>

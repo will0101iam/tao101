@@ -1,12 +1,18 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SiteLayout from "@/components/SiteLayout";
-import { findPublishedPost, getPublishedPostInitial } from "@/lib/publicContent";
-import type { CmsPost } from "@/types/content";
+import {
+  findPublishedPost,
+  getPublishedPostInitial,
+  getPublishedSiteSettingsInitial,
+  readPublishedSiteSettings,
+} from "@/lib/publicContent";
+import type { CmsPost, SiteSettings } from "@/types/content";
 
 export default function Post() {
   const { id } = useParams();
   const [post, setPost] = useState<CmsPost | null>(() => getPublishedPostInitial(id) ?? null);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => getPublishedSiteSettingsInitial());
   const [loading, setLoading] = useState(post === null);
 
   useEffect(() => {
@@ -15,6 +21,19 @@ export default function Post() {
 
   useEffect(() => {
     let active = true;
+
+    async function loadSiteSettings() {
+      try {
+        const nextSiteSettings = await readPublishedSiteSettings();
+        if (active) {
+          setSiteSettings(nextSiteSettings);
+        }
+      } catch {
+        if (active) {
+          setSiteSettings(getPublishedSiteSettingsInitial());
+        }
+      }
+    }
 
     async function loadPost() {
       try {
@@ -35,6 +54,7 @@ export default function Post() {
       }
     }
 
+    loadSiteSettings();
     loadPost();
 
     return () => {
@@ -44,9 +64,9 @@ export default function Post() {
 
   if (loading) {
     return (
-      <SiteLayout>
+      <SiteLayout siteSettings={siteSettings}>
         <div className="min-h-[50vh] flex items-center justify-center text-white/60 px-6">
-          Loading post...
+          {siteSettings.postLoadingLabel}
         </div>
       </SiteLayout>
     );
@@ -54,11 +74,11 @@ export default function Post() {
 
   if (!post) {
     return (
-      <SiteLayout>
+      <SiteLayout siteSettings={siteSettings}>
         <div className="min-h-[50vh] flex flex-col items-center justify-center text-white px-6">
-          <h1 className="text-4xl font-['Poppins'] font-black mb-4">Post not found</h1>
+          <h1 className="text-4xl font-['Poppins'] font-black mb-4">{siteSettings.postNotFoundTitle}</h1>
           <Link to="/" className="text-[#e8e8e8] hover:text-white transition-colors underline">
-            Return to home
+            {siteSettings.returnHomeLabel}
           </Link>
         </div>
       </SiteLayout>
@@ -66,7 +86,7 @@ export default function Post() {
   }
 
   return (
-    <SiteLayout>
+    <SiteLayout siteSettings={siteSettings}>
       <article className="pt-20 pb-32 px-6">
         <div className="max-w-[600px] mx-auto">
           {/* Guotao Tao Style Header */}

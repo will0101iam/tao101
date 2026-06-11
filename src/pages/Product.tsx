@@ -1,8 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SiteLayout from "@/components/SiteLayout";
-import { findPublishedProduct, getPublishedProductInitial } from "@/lib/publicContent";
-import type { CmsProduct } from "@/types/content";
+import {
+  findPublishedProduct,
+  getPublishedProductInitial,
+  getPublishedSiteSettingsInitial,
+  readPublishedSiteSettings,
+} from "@/lib/publicContent";
+import type { CmsProduct, SiteSettings } from "@/types/content";
 
 function formatDisplayDate(value: string) {
   if (!value) {
@@ -24,6 +29,7 @@ function formatDisplayDate(value: string) {
 export default function Product() {
   const { id } = useParams();
   const [product, setProduct] = useState<CmsProduct | null>(() => getPublishedProductInitial(id) ?? null);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => getPublishedSiteSettingsInitial());
   const [loading, setLoading] = useState(product === null);
 
   useEffect(() => {
@@ -32,6 +38,19 @@ export default function Product() {
 
   useEffect(() => {
     let active = true;
+
+    async function loadSiteSettings() {
+      try {
+        const nextSiteSettings = await readPublishedSiteSettings();
+        if (active) {
+          setSiteSettings(nextSiteSettings);
+        }
+      } catch {
+        if (active) {
+          setSiteSettings(getPublishedSiteSettingsInitial());
+        }
+      }
+    }
 
     async function loadProduct() {
       try {
@@ -52,6 +71,7 @@ export default function Product() {
       }
     }
 
+    loadSiteSettings();
     loadProduct();
 
     return () => {
@@ -61,9 +81,9 @@ export default function Product() {
 
   if (loading) {
     return (
-      <SiteLayout>
+      <SiteLayout siteSettings={siteSettings}>
         <div className="min-h-[50vh] flex items-center justify-center text-white/60 px-6">
-          Loading product...
+          {siteSettings.productLoadingLabel}
         </div>
       </SiteLayout>
     );
@@ -71,11 +91,11 @@ export default function Product() {
 
   if (!product) {
     return (
-      <SiteLayout>
+      <SiteLayout siteSettings={siteSettings}>
         <div className="min-h-[50vh] flex flex-col items-center justify-center text-white px-6">
-          <h1 className="text-4xl font-['Poppins'] font-black mb-4">Product not found</h1>
+          <h1 className="text-4xl font-['Poppins'] font-black mb-4">{siteSettings.productNotFoundTitle}</h1>
           <Link to="/" className="text-[#e8e8e8] hover:text-white transition-colors underline">
-            Return to home
+            {siteSettings.returnHomeLabel}
           </Link>
         </div>
       </SiteLayout>
@@ -83,7 +103,7 @@ export default function Product() {
   }
 
   return (
-    <SiteLayout>
+    <SiteLayout siteSettings={siteSettings}>
       <article className="pt-20 pb-32 px-6">
         <div className="max-w-[600px] mx-auto">
           {/* Header */}
@@ -121,14 +141,14 @@ export default function Product() {
           {product.screenshots.length ? (
             <section className="mb-16 border-t border-[#e8e8e8]/20 pt-16">
               <div className="mb-6">
-                <h2 className="font-['Poppins'] font-[800] text-[20px] text-[#efefef]">Screenshots</h2>
+                <h2 className="font-['Poppins'] font-[800] text-[20px] text-[#efefef]">{siteSettings.productScreenshotsTitle}</h2>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 {product.screenshots.map((imageUrl, index) => (
                   <figure key={`${imageUrl}-${index}`} className="overflow-hidden border border-white/10 bg-white/[0.02]">
-                    <img src={imageUrl} alt={`Screenshot ${index + 1}`} className="w-full object-cover" />
+                    <img src={imageUrl} alt={`${siteSettings.productScreenshotLabelPrefix} ${index + 1}`} className="w-full object-cover" />
                     <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-white/55">
-                      Screenshot {index + 1}
+                      {siteSettings.productScreenshotLabelPrefix} {index + 1}
                     </figcaption>
                   </figure>
                 ))}
@@ -143,7 +163,7 @@ export default function Product() {
                 href={product.ctaUrl}
                 className="inline-flex items-center justify-center bg-[#efefef] text-[#111111] px-[32px] py-[16px] text-[18px] font-['Poppins'] font-[800] hover:bg-[#e0c787] hover:text-[#111111] transition-colors duration-300"
               >
-                {product.ctaLabel || "Open Product"}
+                {product.ctaLabel || siteSettings.productPrimaryCtaFallbackLabel}
               </a>
             </div>
           ) : null}

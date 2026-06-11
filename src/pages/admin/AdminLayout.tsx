@@ -32,6 +32,7 @@ export default function AdminLayout() {
         <div className="flex flex-wrap items-center gap-3 mb-10">
           <NavLink to="/admin/posts" className={linkClass}>Posts</NavLink>
           <NavLink to="/admin/products" className={linkClass}>Products</NavLink>
+          <NavLink to="/admin/settings" className={linkClass}>Settings</NavLink>
           <button onClick={handleSignOut} className="ml-auto px-4 py-2 border border-white/10 text-white/70 hover:border-white/30 hover:text-white transition-colors">Sign Out</button>
         </div>
         <Outlet />

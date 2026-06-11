@@ -2,11 +2,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CMS_POSTS_KEY,
   CMS_PRODUCTS_KEY,
+  CMS_SITE_SETTINGS_KEY,
   getHistoricalSeedPostCoverBySlug,
   getAdminPosts,
   getPublishedPostsSnapshot,
   savePost,
   saveProduct,
+  getSiteSettingsInitial,
+  readSiteSettings,
+  saveSiteSettings,
   getAdminProducts,
   slugify,
 } from "@/lib/cms";
@@ -34,6 +38,7 @@ describe("cms local mode", () => {
 
     window.localStorage.removeItem(CMS_POSTS_KEY);
     window.localStorage.removeItem(CMS_PRODUCTS_KEY);
+    window.localStorage.removeItem(CMS_SITE_SETTINGS_KEY);
   });
 
   it("falls back to seeded published posts", async () => {
@@ -161,6 +166,64 @@ describe("cms local mode", () => {
     expect(savedProduct?.screenshots).toEqual(["https://example.com/shot-1.jpg", "https://example.com/shot-2.jpg"]);
     expect(savedProduct?.ctaLabel).toBe("");
     expect(savedProduct?.ctaUrl).toBe("");
+  });
+
+  it("provides seeded site settings with the approved about social labels", () => {
+    const settings = getSiteSettingsInitial();
+
+    expect(settings.aboutIntroHeading).toBe("Hey, I'm Guotao Tao.");
+    expect(settings.aboutParagraphs).toEqual([
+      "从事AI产品经理的工作，喜欢批判性的产品思考，喜欢研究用户行为和心理学。",
+      "梦想是早日退休，在自然中肆意的浪费时间。",
+      "做的速度跟不上开脑洞的速度，因此时常感到焦虑和轻微的挫败感，然后重新在已经跟账单一样长的 todolist 上继续写 todo，希望有一天能够清空这个账单，实现真正的自由。",
+      "ENTJ-A，双鱼座，自由度和话语权是性格的底色，没有这两样东西，无法激发 100% 性能。",
+    ]);
+    expect(settings.aboutSocialLinks.map((link) => link.label)).toEqual(["微信公众号", "小红书", "Twitter"]);
+  });
+
+  it("persists site settings paragraphs and social links in local mode", async () => {
+    await saveSiteSettings({
+      heroEyebrow: "GUOTAO TAO",
+      heroTitle: "Build.\nBreak.\nRepeat.",
+      heroDescription: "Exploring the intersection of AI, product design, and continuous learning.",
+      heroPrimaryCtaLabel: "Explore My Products",
+      heroPrimaryCtaUrl: "#products",
+      heroSecondaryCtaLabel: "Read My Writings",
+      heroSecondaryCtaUrl: "#blog",
+      productsEyebrow: "THE PRODUCTS",
+      productsTitle: "Manifesting Necessity",
+      productsDescription: "Vibe coding experiments, AI agents, and tools built to serve me.",
+      blogEyebrow: "THE BLOGS",
+      blogTitle: "Explore Your Curiosity",
+      blogDescription: "Deep dives on human potential, lifestyle design, & digital business.",
+      blogLoadMoreLabel: "Load More",
+      aboutEyebrow: "ABOUT ME",
+      aboutTitle: "Who Is Guotao Tao?",
+      aboutDescription: "Just a human obsessed with humans.",
+      aboutAvatarUrl: "https://example.com/avatar.jpg",
+      aboutIntroHeading: "Hey, I'm Guotao Tao.",
+      aboutParagraphs: ["第一段", "第二段"],
+      aboutSocialLinks: [
+        { label: "微信公众号", url: "https://mp.weixin.qq.com/example" },
+        { label: "小红书", url: "https://www.xiaohongshu.com/user/example" },
+        { label: "Twitter", url: "https://x.com/example" },
+      ],
+      footerLogoUrl: "https://example.com/logo.png",
+      footerSlogan: "Build. Break. Repeat.",
+      footerDescription: "Footer copy",
+      footerRightCopy: "Gain A New Perspective On Life & Business",
+      footerCopyright: "© All Rights Reserved.",
+      footerSocialLinks: [{ label: "Twitter", url: "https://x.com/example" }],
+    });
+
+    const settings = readSiteSettings();
+    expect(settings.aboutParagraphs).toEqual(["第一段", "第二段"]);
+    expect(settings.aboutSocialLinks).toEqual([
+      { label: "微信公众号", url: "https://mp.weixin.qq.com/example" },
+      { label: "小红书", url: "https://www.xiaohongshu.com/user/example" },
+      { label: "Twitter", url: "https://x.com/example" },
+    ]);
+    expect(settings.footerSocialLinks).toEqual([{ label: "Twitter", url: "https://x.com/example" }]);
   });
 
   it("sorts admin posts and products by publish date descending before updated time fallback", () => {

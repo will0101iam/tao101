@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import {
+  getPublishedSiteSettingsInitial,
   getPublishedPostsInitial,
   getPublishedProductsInitial,
   listPublishedPosts,
   listPublishedProducts,
+  readPublishedSiteSettings,
 } from "@/lib/publicContent";
-import type { CmsPost, CmsProduct } from "@/types/content";
+import type { CmsPost, CmsProduct, SiteSettings } from "@/types/content";
 
 export default function Home() {
   const [blogPosts, setBlogPosts] = useState<CmsPost[]>(() => getPublishedPostsInitial());
   const [products, setProducts] = useState<CmsProduct[]>(() => getPublishedProductsInitial());
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => getPublishedSiteSettingsInitial());
   const [loadingPosts, setLoadingPosts] = useState(blogPosts.length === 0);
   const [loadingProducts, setLoadingProducts] = useState(products.length === 0);
   const [visibleCount, setVisibleCount] = useState(3);
@@ -21,9 +24,10 @@ export default function Home() {
 
     async function loadPublishedContent() {
       try {
-        const [nextPosts, nextProducts] = await Promise.all([
+        const [nextPosts, nextProducts, nextSiteSettings] = await Promise.all([
           listPublishedPosts(),
           listPublishedProducts(),
+          readPublishedSiteSettings(),
         ]);
 
         if (!active) {
@@ -32,6 +36,7 @@ export default function Home() {
 
         setBlogPosts(nextPosts);
         setProducts(nextProducts);
+        setSiteSettings(nextSiteSettings);
       } catch {
         if (!active) {
           return;
@@ -58,33 +63,31 @@ export default function Home() {
   };
 
   return (
-    <SiteLayout>
+    <SiteLayout siteSettings={siteSettings}>
       {/* HERO SECTION */}
       <section className="flex flex-col items-center justify-center text-center px-6 py-24 md:py-32 lg:py-40">
         <div className="max-w-[500px] mx-auto w-full">
-          <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-[74px] uppercase">
-            GUOTAO TAO
+          <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-[34px] uppercase">
+            {siteSettings.heroEyebrow}
           </h5>
-          <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-[102px]">
-            Build.<br />
-            Break.<br />
-            Repeat.
+          <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-[72px] whitespace-pre-line">
+            {siteSettings.heroTitle}
           </h2>
           <p className="text-[18px] text-[#e8e8e8] mb-[50px] leading-[25.2px] font-['Poppins']">
-            Exploring the intersection of AI, product design, and continuous learning. I build tools and share insights on navigating the digital frontier.
+            {siteSettings.heroDescription}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <a
-              href="#products"
+              href={siteSettings.heroPrimaryCtaUrl}
               className="inline-flex items-center justify-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300"
             >
-              Explore My Products
+              {siteSettings.heroPrimaryCtaLabel}
             </a>
             <a
-              href="#blog"
+              href={siteSettings.heroSecondaryCtaUrl}
               className="inline-flex items-center justify-center gap-2 text-[15px] font-[600] text-white hover:text-white/60 transition-colors duration-300"
             >
-              Read My Writings
+              {siteSettings.heroSecondaryCtaLabel}
             </a>
           </div>
         </div>
@@ -94,13 +97,13 @@ export default function Home() {
       <section id="products" className="px-6 py-20 md:py-32">
         <div className="max-w-[750px] mx-auto text-center mb-20">
           <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-4 uppercase">
-            PRODUCTS
+            {siteSettings.productsEyebrow}
           </h5>
           <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-            Manifesting Necessity
+            {siteSettings.productsTitle}
           </h2>
           <p className="text-[18px] text-[#e8e8e8] leading-[25.2px] font-['Poppins']">
-            Vibe coding experiments, AI agents, and practical tools to accelerate your workflow.
+            {siteSettings.productsDescription}
           </p>
         </div>
 
@@ -129,14 +132,14 @@ export default function Home() {
 
               <div className="border-b border-[#e8e8e8]/20 pb-4">
                 <span className="font-['Poppins'] font-[700] text-[18px] text-[#ffffff] underline underline-offset-2 decoration-[1.5px] capitalize">
-                  Explore Tool
+                  {siteSettings.productsCardCtaLabel}
                 </span>
               </div>
             </Link>
           ))}
           {!loadingProducts && products.length === 0 ? (
             <div className="md:col-span-2 border border-white/10 px-6 py-12 text-center text-white/60">
-              No published products yet.
+              {siteSettings.productsEmptyState}
             </div>
           ) : null}
         </div>
@@ -146,13 +149,13 @@ export default function Home() {
       <section id="blog" className="px-6 py-20 md:py-32">
         <div className="max-w-[750px] mx-auto text-center mb-20">
           <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-4 uppercase">
-            THE BLOG
+            {siteSettings.blogEyebrow}
           </h5>
           <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-            Explore Your Curiosity
+            {siteSettings.blogTitle}
           </h2>
           <p className="text-[18px] text-[#e8e8e8] leading-[25.2px] font-['Poppins']">
-            Deep dives on human potential, lifestyle design, & digital business.
+            {siteSettings.blogDescription}
           </p>
         </div>
 
@@ -182,7 +185,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col border-b border-[#e8e8e8]/20 pb-4 mb-4">
-                  <span className="text-[18px] capitalize text-[#ffffff] font-[700] group-hover:text-[#e8e8e8]/60 transition-colors inline-block underline underline-offset-2 decoration-[1.5px] decoration-[#ffffff] group-hover:decoration-[#e8e8e8]/60 self-start">Read Full Post</span>
+                  <span className="text-[18px] capitalize text-[#ffffff] font-[700] group-hover:text-[#e8e8e8]/60 transition-colors inline-block underline underline-offset-2 decoration-[1.5px] decoration-[#ffffff] group-hover:decoration-[#e8e8e8]/60 self-start">{siteSettings.blogCardCtaLabel}</span>
                 </div>
                 <div className="flex items-center text-[14px] font-[400] text-[#e8e8e8] italic font-serif">
                   <span>{post.authorName}</span>
@@ -195,7 +198,7 @@ export default function Home() {
 
           {!loadingPosts && blogPosts.length === 0 ? (
             <div className="border border-white/10 px-6 py-12 text-center text-white/60 mb-16">
-              No published posts yet.
+              {siteSettings.blogEmptyState}
             </div>
           ) : null}
           
@@ -206,7 +209,7 @@ export default function Home() {
                 onClick={handleLoadMore}
                 className="inline-flex items-center justify-center border border-[#e8e8e8] text-[#e8e8e8] px-[24px] py-[12px] text-[15px] font-[600] hover:border-[#e8e8e8]/65 hover:text-[#e8e8e8]/65 transition-colors duration-300"
               >
-                Load More
+                {siteSettings.blogLoadMoreLabel}
               </a>
             </div>
           )}
@@ -217,46 +220,44 @@ export default function Home() {
       <section className="px-6 py-20 md:py-32">
         <div className="max-w-[750px] mx-auto text-center mb-16">
           <h5 className="font-['Montserrat'] font-[300] text-[18px] tracking-[12px] text-white mb-4 uppercase">
-            ABOUT ME
+            {siteSettings.aboutEyebrow}
           </h5>
           <h2 className="font-['Poppins'] font-[900] text-[52px] leading-[1.2] tracking-[-1.1px] text-[#efefef] mb-6">
-            Who Is Guotao Tao?
+            {siteSettings.aboutTitle}
           </h2>
           <p className="text-[18px] text-[#e8e8e8] leading-[25.2px] font-['Poppins']">
-            Just a human obsessed with humans.
+            {siteSettings.aboutDescription}
           </p>
         </div>
         
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-[1fr_2fr] gap-12 items-start">
           <div>
             <img 
-              src="https://thedankoe.com/wp-content/uploads/2024/11/pfp23.jpg" 
+              src={siteSettings.aboutAvatarUrl}
               alt="Author" 
               className="w-full h-auto mb-6"
             />
             <div className="flex gap-4">
-              <a href="#" className="text-[15px] font-semibold text-white hover:text-white/60 transition-colors">Twitter</a>
-              <a href="#" className="text-[15px] font-semibold text-white hover:text-white/60 transition-colors">Youtube</a>
-              <a href="#" className="text-[15px] font-semibold text-white hover:text-white/60 transition-colors">Linkedin</a>
+              {siteSettings.aboutSocialLinks.map((link) => (
+                <a
+                  key={`${link.label}-${link.url}`}
+                  href={link.url || "#"}
+                  className="text-[15px] font-semibold text-white hover:text-white/60 transition-colors"
+                  target={link.url ? "_blank" : undefined}
+                  rel={link.url ? "noreferrer" : undefined}
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
           <div className="space-y-6 text-[#e8e8e8] text-[18px] leading-[25.2px]">
-            <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-6">Hey, I'm Guotao Tao.</h3>
-            <p>
-              I'm the creator of this space, and a writer obsessed with the mind, the internet, and the future.
-            </p>
-            <p>
-              Previously, I was a brand advisor for creators and influencers. Now I teach writing as a way to discover your life's work, secure your future, and enjoy a creative lifestyle.
-            </p>
-            <p>
-              <strong>For those wondering, I am not accepting calls, clients, or "chats to pick my brain" at the moment. If you'd like to learn from me, grab one of my courses above.</strong>
-            </p>
-            <p className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mt-8">
-              Build. Break. Repeat.
-            </p>
-            <p>
-              I dive deep into human potential, lifestyle design, and one-person businesses to give you a unique, digestible way of improving your life.
-            </p>
+            <h3 className="font-['Poppins'] font-[900] text-[24px] tracking-[-0.6px] text-[#efefef] mb-6">
+              {siteSettings.aboutIntroHeading}
+            </h3>
+            {siteSettings.aboutParagraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
         </div>
       </section>

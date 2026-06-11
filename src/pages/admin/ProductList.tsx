@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import ProductEditor from "@/pages/admin/ProductEditor";
-import { deleteProduct, getAdminProducts, listProducts } from "@/lib/cms";
+import { deleteProduct, getAdminProducts, getSiteSettingsInitial, listProducts, loadSiteSettings } from "@/lib/cms";
 import { useSyncedAdminListHeight } from "@/hooks/useSyncedAdminListHeight";
-import type { CmsProduct } from "@/types/content";
+import type { CmsProduct, SiteSettings } from "@/types/content";
 
 export default function ProductList() {
   const [products, setProducts] = useState<CmsProduct[]>([]);
   const [editing, setEditing] = useState<CmsProduct | null>(null);
   const [creating, setCreating] = useState(false);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => getSiteSettingsInitial());
   const listShellRef = useRef<HTMLDivElement | null>(null);
   const editorColumnRef = useRef<HTMLDivElement | null>(null);
   const syncedListHeight = useSyncedAdminListHeight(listShellRef, editorColumnRef, [
@@ -18,6 +19,7 @@ export default function ProductList() {
 
   useEffect(() => {
     listProducts().then(setProducts).catch(() => setProducts(getAdminProducts()));
+    loadSiteSettings().then(setSiteSettings).catch(() => setSiteSettings(getSiteSettingsInitial()));
   }, []);
 
   async function handleDelete(id: string) {
@@ -59,7 +61,7 @@ export default function ProductList() {
                 </div>
                 <p className="text-sm text-white/60 line-clamp-2">{product.excerpt}</p>
                 <div className="flex items-center justify-between mt-4 text-xs text-white/40">
-                  <span>{product.date || "No publish date"}</span>
+                  <span>{product.date || siteSettings.adminProductNoDateLabel}</span>
                   <span onClick={(event) => { event.stopPropagation(); handleDelete(product.id); }} className="cursor-pointer hover:text-[#ff9d9d]">Delete</span>
                 </div>
               </button>
@@ -73,7 +75,7 @@ export default function ProductList() {
         ) : editing ? (
           <ProductEditor product={editing} onSaved={(product) => { setProducts(getAdminProducts()); setEditing(product); }} onCancel={() => setEditing(null)} />
         ) : (
-          <div className="border border-white/10 p-8 text-white/60">Select a product or create a new one.</div>
+          <div className="border border-white/10 p-8 text-white/60">{siteSettings.adminProductsEmptyState}</div>
         )}
       </div>
     </div>

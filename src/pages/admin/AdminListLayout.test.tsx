@@ -29,6 +29,16 @@ vi.mock("@/lib/cms", () => ({
   ]),
   getAdminPosts: vi.fn(() => []),
   deletePost: vi.fn(async () => {}),
+  getSiteSettingsInitial: vi.fn(() => ({
+    adminPostsEmptyState: "请选择一篇文章或新建文章",
+    adminProductsEmptyState: "请选择一个产品或新建产品",
+    adminProductNoDateLabel: "未设置发布日期",
+  })),
+  loadSiteSettings: vi.fn(async () => ({
+    adminPostsEmptyState: "请选择一篇文章或新建文章",
+    adminProductsEmptyState: "请选择一个产品或新建产品",
+    adminProductNoDateLabel: "未设置发布日期",
+  })),
   listProducts: vi.fn(async () => [
     {
       id: "product-1",
@@ -104,5 +114,62 @@ describe("Admin list layout", () => {
     expect(scrollArea.className).toContain("h-full");
     expect(scrollArea.className).toContain("overflow-y-auto");
     expect(editorColumn).toBeTruthy();
+  });
+
+  it("renders admin empty-state and no-date copy from site settings", async () => {
+    const cms = await import("@/lib/cms");
+    vi.mocked(cms.listPosts).mockResolvedValueOnce([]);
+    vi.mocked(cms.getAdminPosts).mockReturnValueOnce([]);
+    vi.mocked(cms.listProducts).mockResolvedValueOnce([
+      {
+        id: "product-2",
+        slug: "product-2",
+        title: "Draft Product",
+        excerpt: "no date yet",
+        date: "",
+        coverImage: "",
+        screenshots: [],
+        content: "<p>product</p>",
+        ctaLabel: "",
+        ctaUrl: "",
+        status: "draft",
+        createdAt: "2026-05-20T00:00:00.000Z",
+        updatedAt: "2026-05-20T00:00:00.000Z",
+      },
+    ]);
+    vi.mocked(cms.getAdminProducts).mockReturnValueOnce([
+      {
+        id: "product-2",
+        slug: "product-2",
+        title: "Draft Product",
+        excerpt: "no date yet",
+        date: "",
+        coverImage: "",
+        screenshots: [],
+        content: "<p>product</p>",
+        ctaLabel: "",
+        ctaUrl: "",
+        status: "draft",
+        createdAt: "2026-05-20T00:00:00.000Z",
+        updatedAt: "2026-05-20T00:00:00.000Z",
+      },
+    ]);
+
+    render(<PostList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("请选择一篇文章或新建文章")).toBeTruthy();
+    });
+
+    cleanup();
+
+    render(<ProductList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Draft Product")).toBeTruthy();
+    });
+
+    expect(screen.getByText("请选择一个产品或新建产品")).toBeTruthy();
+    expect(screen.getByText("未设置发布日期")).toBeTruthy();
   });
 });
