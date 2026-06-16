@@ -136,6 +136,23 @@ function startServer() {
   try {
     await page.goto(`${url}/index.html`);
     await page.waitForSelector("[data-home-products] .product-card");
+    assert.deepEqual(await page.locator(".site-footer .footer-links a").evaluateAll((links) => links.map((link) => ({
+      text: link.textContent.trim(),
+      href: link.getAttribute("href"),
+    }))), [
+      {
+        text: "微信公众号",
+        href: "https://mp.weixin.qq.com/s/4NSIvsU_SbTeUHzH5U9VUw",
+      },
+      {
+        text: "小红书",
+        href: "https://www.xiaohongshu.com/user/profile/5bfcd46a6b58b740b2aa8c54",
+      },
+      {
+        text: "Twitter",
+        href: "#",
+      },
+    ]);
     assert.equal(await page.locator("[data-home-products] .product-card").count(), 3);
     assert.equal(await page.locator("[data-home-products] .product-card h3").first().textContent(), "Product Four");
     assert.deepEqual(await page.locator("[data-home-products] .product-card .product-card-media img").evaluateAll((images) => images.map((image) => image.getAttribute("src"))), [
