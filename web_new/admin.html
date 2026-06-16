@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Console | Guotao Tao</title>
+    <meta name="description" content="Nothing-inspired content console for posts and products." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Doto:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260616-product-card-preview" />
+  </head>
+  <body class="admin-page">
+    <div class="page-shell">
+      <header class="site-header admin-header">
+        <a class="brand" href="./index.html" aria-label="Back to site">
+          <span class="notion-mark" aria-hidden="true">GT</span>
+          <span class="brand-copy">
+            <span class="brand-title">Content Console</span>
+            <span class="brand-meta">POSTS / PRODUCTS / SUPABASE</span>
+          </span>
+        </a>
+
+        <nav class="nav-links" aria-label="Admin navigation">
+          <a href="./index.html">Site</a>
+          <a href="./blog.html">Writing</a>
+        </nav>
+      </header>
+
+      <main class="admin-main" data-admin-app>
+        <section class="admin-login" data-admin-login>
+          <div>
+            <p class="eyebrow">/ ADMIN ACCESS</p>
+            <h1>Operate The Archive</h1>
+            <p>
+              Sign in with the same Supabase account used by the original site admin. Published changes are read
+              by the new Nothing-style frontend.
+            </p>
+          </div>
+          <form class="admin-login-card" data-login-form>
+            <label>
+              <span>Account</span>
+              <input type="text" name="email" autocomplete="username" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" name="password" autocomplete="current-password" required />
+            </label>
+            <p class="admin-message" data-login-message></p>
+            <button class="button primary" type="submit">[ ENTER ADMIN ]</button>
+          </form>
+        </section>
+
+        <section class="admin-console is-hidden" data-admin-console>
+          <div class="admin-console-top">
+            <div>
+              <p class="eyebrow">/ LIVE CMS</p>
+              <h1>Content Console</h1>
+            </div>
+            <div class="admin-session">
+              <span data-session-email>Signed in</span>
+              <button type="button" data-sign-out>[ SIGN OUT ]</button>
+            </div>
+          </div>
+
+          <div class="admin-dashboard">
+            <aside class="admin-sidebar">
+              <div class="admin-tabs" role="tablist" aria-label="Content type">
+                <button class="is-active" type="button" data-admin-tab="posts">Posts</button>
+                <button type="button" data-admin-tab="products">Products</button>
+              </div>
+              <button class="admin-new-button" type="button" data-new-entry>[ NEW ENTRY ]</button>
+              <div class="admin-list" data-entry-list>
+                <p class="inline-status">[LOADING CONTENT...]</p>
+              </div>
+            </aside>
+
+            <section class="admin-editor-shell">
+              <form class="admin-editor is-hidden" data-editor-form>
+                <input type="hidden" name="id" />
+                <input type="hidden" name="slug" />
+
+                <div class="admin-document-head">
+                  <div class="admin-document-title">
+                    <p class="eyebrow" data-editor-kicker>/ EDIT POST</p>
+                    <h2 data-editor-title>Edit Entry</h2>
+                    <div class="admin-document-meta">
+                      <span data-preview-status>[DRAFT]</span>
+                      <span data-preview-date>[NO DATE]</span>
+                      <button type="button" data-settings-toggle>[ SETTINGS ]</button>
+                    </div>
+                  </div>
+                  <div class="admin-document-actions">
+                    <button class="button primary" type="submit">[ SAVE ]</button>
+                    <button class="button secondary" type="button" data-cancel-edit>[ CLOSE ]</button>
+                    <button class="admin-danger-button" type="button" data-delete-entry>[ DELETE ]</button>
+                  </div>
+                </div>
+
+                <details class="admin-settings-panel" data-settings-panel>
+                  <summary>
+                    <div class="admin-panel-title">
+                      <span>01</span>
+                      <strong>Settings</strong>
+                    </div>
+                    <em>Title, status, cover and metadata</em>
+                  </summary>
+
+                  <div class="admin-settings-grid">
+                    <div class="admin-settings-main">
+                      <div class="admin-field-grid">
+                        <label>
+                          <span>Title</span>
+                          <input name="title" required />
+                        </label>
+                        <label>
+                          <span>Publish Date</span>
+                          <input type="date" name="date" />
+                        </label>
+                      </div>
+
+                      <label>
+                        <span>Excerpt</span>
+                        <textarea name="excerpt" rows="3"></textarea>
+                      </label>
+
+                      <div class="admin-field-grid">
+                        <label>
+                          <span>Status</span>
+                          <select name="status">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                          </select>
+                        </label>
+                        <label>
+                          <span>Cover URL</span>
+                          <input name="coverImage" />
+                        </label>
+                      </div>
+
+                      <label class="admin-upload">
+                        <span>Upload Cover</span>
+                        <input type="file" name="coverUpload" accept="image/*" />
+                      </label>
+
+                      <div class="admin-field-grid" data-product-fields>
+                        <label>
+                          <span>CTA Label</span>
+                          <input name="ctaLabel" />
+                        </label>
+                        <label>
+                          <span>CTA URL</span>
+                          <input name="ctaUrl" />
+                        </label>
+                      </div>
+
+                      <label data-product-fields>
+                        <span>Screenshots, one URL per line</span>
+                        <textarea name="screenshots" rows="4"></textarea>
+                      </label>
+                    </div>
+
+                    <div class="admin-settings-side">
+                      <div class="admin-preview" data-cover-preview>
+                        <span>Cover preview</span>
+                        <div></div>
+                      </div>
+                      <div class="admin-image-strip" data-image-strip></div>
+                    </div>
+                  </div>
+                </details>
+
+                <section class="admin-body-stage">
+                  <div class="admin-panel-head">
+                    <div class="admin-panel-title">
+                      <span>02</span>
+                      <strong>Body</strong>
+                    </div>
+                    <div class="admin-mode-switch" role="group" aria-label="Body editor mode">
+                      <button class="is-active" type="button" data-visual-mode="preview">Preview</button>
+                      <button type="button" data-visual-mode="edit">Edit</button>
+                    </div>
+                  </div>
+                  <p class="admin-slash-hint">Type <kbd>/</kbd> at the start of an empty line for paragraph, headings, quote, list, local image upload, divider, or code.</p>
+                  <article class="admin-article-preview" data-entry-preview>
+                    <p class="inline-status">[SELECT CONTENT TO PREVIEW]</p>
+                  </article>
+                  <div class="admin-slash-menu is-hidden" data-slash-menu role="menu" aria-label="Slash commands"></div>
+                  <input class="is-hidden" type="file" accept="image/*" data-slash-image-upload />
+                </section>
+
+                <details class="admin-source-panel">
+                  <summary>
+                    <span>03</span>
+                    <strong>Advanced Body HTML</strong>
+                    <em>Open only when you need to edit migrated rich text source.</em>
+                  </summary>
+                  <label>
+                    <span>Body HTML Source</span>
+                    <textarea name="content" rows="16" spellcheck="false"></textarea>
+                  </label>
+                </details>
+
+                <p class="admin-message" data-editor-message></p>
+              </form>
+
+              <div class="admin-empty" data-editor-empty>
+                <p class="eyebrow">/ SELECT ENTRY</p>
+                <h2>Choose a post or product.</h2>
+                <p>Create a new entry from the left panel, or select an existing one to edit its live Supabase record.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./config.js?v=20260616-product-card-preview"></script>
+    <script src="./admin-blocks.js?v=20260616-empty-line-slash"></script>
+    <script src="./admin.js?v=20260616-empty-line-slash"></script>
+  </body>
+</html>

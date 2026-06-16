@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guotao Tao | Nothing Design Portfolio</title>
+    <meta
+      name="description"
+      content="A Nothing-inspired personal site for Guotao Tao: writing, tools, products, and product thinking."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Doto:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260616-product-card-preview" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header" data-reveal>
+        <a class="brand" href="#top" aria-label="Guotao Tao home">
+          <span class="notion-mark" aria-hidden="true">GT</span>
+          <span class="brand-copy">
+            <span class="brand-title">Guotao Tao</span>
+            <span class="brand-meta">PRODUCT / AI / TOOLS</span>
+          </span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#products">Products</a>
+          <a href="./blog.html">Writing</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div class="rotary-controls" aria-label="Site controls">
+          <div class="rotary-control" data-rotary="language">
+            <span class="rotary-option is-left" data-rotary-option="en">EN</span>
+            <span class="rotary-option is-right" data-rotary-option="zh">中</span>
+            <button class="rotary-knob" type="button" data-language-toggle aria-label="Switch language">
+              <span class="rotary-needle"></span>
+            </button>
+          </div>
+          <div class="rotary-control" data-rotary="theme">
+            <span class="rotary-option is-left" data-rotary-option="dark">DARK</span>
+            <span class="rotary-option is-right" data-rotary-option="light">LIGHT</span>
+            <button class="rotary-knob" type="button" data-theme-toggle aria-label="Toggle theme">
+              <span class="rotary-needle"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero-grid">
+          <div class="hero-copy" data-reveal>
+            <p class="eyebrow">/ PERSONAL OPERATING SYSTEM</p>
+            <h1>
+              Build.
+              <br />
+              Break.
+              <br />
+              Repeat.
+            </h1>
+            <p class="hero-description">
+              Exploring the intersection of AI product thinking, critical systems design, and small tools
+              built from real personal needs.
+            </p>
+            <div class="hero-actions" aria-label="Primary actions">
+              <a class="button primary" href="#products">[ VIEW PRODUCTS ]</a>
+              <a class="button secondary" href="./blog.html">[ READ BLOGS ]</a>
+            </div>
+          </div>
+
+          <aside class="instrument-panel" aria-label="Site status panel" data-reveal>
+            <div class="panel-header">
+              <span>STATUS</span>
+              <strong>ONLINE</strong>
+            </div>
+            <div class="metric-large">
+              <span class="metric-number" data-session-timer>00:00</span>
+              <span class="metric-unit">SESSION TIMER</span>
+            </div>
+            <div class="segmented-meter" aria-label="Build cycle progress">
+              <span class="active"></span>
+              <span class="active"></span>
+              <span class="active"></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <dl class="stat-list">
+              <div>
+                <dt>MODE</dt>
+                <dd>AI PRODUCT</dd>
+              </div>
+              <div>
+                <dt>STACK</dt>
+                <dd>REACT / SUPABASE</dd>
+              </div>
+              <div>
+                <dt>RHYTHM</dt>
+                <dd>SHIP SMALL</dd>
+              </div>
+            </dl>
+          </aside>
+        </section>
+
+        <section class="section-block" id="products" data-reveal>
+          <div class="section-heading">
+            <p class="eyebrow">/ PRODUCTS</p>
+            <h2>Manifesting Necessity</h2>
+            <p>Vibe coding experiments, AI agents, and tools built to serve one specific workflow first.</p>
+          </div>
+
+          <div class="product-grid" data-home-products>
+            <article class="product-card featured">
+              <div class="card-index">01</div>
+              <p class="card-label">TOOL / TERMINAL</p>
+              <h3>Zen Terminal</h3>
+              <p>Command line output reduced to signal: warnings, errors, success states, and nothing else.</p>
+              <div class="card-footer">
+                <span>BUILD STATE</span>
+                <strong>PROTOTYPE</strong>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="card-index">02</div>
+              <p class="card-label">SCAFFOLD / AI</p>
+              <h3>Vibe Scaffold</h3>
+              <p>A starting system for jumping from idea to usable interface without drowning in setup work.</p>
+              <div class="card-footer">
+                <span>BUILD STATE</span>
+                <strong>ACTIVE</strong>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="card-index">03</div>
+              <p class="card-label">CMS / PERSONAL</p>
+              <h3>Text-first CMS</h3>
+              <p>A personal publishing backend designed for writing words instead of editing markup.</p>
+              <div class="card-footer">
+                <span>BUILD STATE</span>
+                <strong>LIVE</strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block writing-layout" id="writing" data-reveal>
+          <div class="section-heading compact">
+            <p class="eyebrow">/ WRITING</p>
+            <h2>Explore Your Curiosity</h2>
+            <p>Short logs on product judgment, AI tools, user behavior, and the anxiety of too many ideas.</p>
+          </div>
+
+          <div class="log-list" aria-label="Writing list" data-home-posts>
+            <p class="inline-status">[LOADING LATEST POSTS...]</p>
+          </div>
+        </section>
+
+        <section class="about-panel" id="about" data-reveal>
+          <div>
+            <p class="eyebrow">/ ABOUT</p>
+            <h2>Hey, I'm Guotao Tao.</h2>
+          </div>
+          <div class="about-copy">
+            <p>从事AI产品经理的工作，喜欢批判性的产品思考，喜欢研究用户行为和心理。</p>
+            <p>ENTJ-A，双鱼座，自由度和话语权是刚需，没有那就摆烂。</p>
+            <p>梦想是早日退休，在自然中肆意的浪费时间，什么也不做，什么也不想，停止思考。</p>
+            <p>
+              做的速度跟不上开脑洞的速度，因此时常感到焦虑和轻微的挫败感，然后重新在已经跟账单一样长的
+              todolist 上继续写 todo……
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer" data-reveal>
+        <div class="footer-brand">
+          <span class="notion-mark small" aria-hidden="true">GT</span>
+          <span>Build. Break. Repeat.</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">微信公众号</a>
+          <a href="#">小红书</a>
+          <a href="#">Twitter</a>
+          <a href="./blog.html">Writing</a>
+          <a href="./admin.html">Admin</a>
+        </div>
+        <p>© Guotao Tao. SYSTEM STATUS: [ PERSONAL SITE / EXPERIMENTAL BUILD ]</p>
+      </footer>
+    </div>
+
+    <script src="./config.js?v=20260616-product-card-preview"></script>
+    <script src="./cms-data.js?v=20260616-product-card-preview"></script>
+    <script src="./main.js?v=20260616-product-card-preview"></script>
+  </body>
+</html>

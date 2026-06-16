@@ -1,0 +1,46 @@
+[
+  {
+    "id": "zen-terminal",
+    "slug": "zen-terminal",
+    "title": "Zen Terminal",
+    "date": "May 12, 2026",
+    "excerpt": "Command line output reduced to signal: warnings, errors, success states, and nothing else.",
+    "coverImage": "https://thedankoe.com/wp-content/uploads/2025/07/featured-2-768x432.jpg",
+    "screenshots": [
+      "https://thedankoe.com/wp-content/uploads/2025/07/featured-2-768x432.jpg",
+      "https://thedankoe.com/wp-content/uploads/2025/08/featured-768x432.jpg"
+    ],
+    "content": "<p>Zen Terminal is a focused command line layer for reducing noisy output into useful signals.</p>",
+    "ctaLabel": "Open Product",
+    "ctaUrl": "",
+    "status": "published"
+  },
+  {
+    "id": "vibe-scaffold",
+    "slug": "vibe-scaffold",
+    "title": "Vibe Scaffold",
+    "date": "May 4, 2026",
+    "excerpt": "A starting system for jumping from idea to usable interface without drowning in setup work.",
+    "coverImage": "https://thedankoe.com/wp-content/uploads/2025/08/featured-768x432.jpg",
+    "screenshots": [
+      "https://thedankoe.com/wp-content/uploads/2025/08/featured-768x432.jpg"
+    ],
+    "content": "<p>Vibe Scaffold is an opinionated minimalist boilerplate designed to get out of the way.</p>",
+    "ctaLabel": "Open Product",
+    "ctaUrl": "",
+    "status": "published"
+  },
+  {
+    "id": "text-first-cms",
+    "slug": "text-first-cms",
+    "title": "Text-first CMS",
+    "date": "May 1, 2026",
+    "excerpt": "A personal publishing backend designed for writing words instead of editing markup.",
+    "coverImage": "",
+    "screenshots": [],
+    "content": "<p>A small content console for publishing posts and product notes from the same data model.</p>",
+    "ctaLabel": "Open Product",
+    "ctaUrl": "",
+    "status": "published"
+  }
+]

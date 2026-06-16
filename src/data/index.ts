@@ -192,7 +192,7 @@ export const SITE_SETTINGS: SiteSettingsSeed = {
   adminPostsEmptyState: "Select a post or create a new one.",
   adminProductsEmptyState: "Select a product or create a new one.",
   adminProductNoDateLabel: "No publish date",
-  footerLogoUrl: "https://thedankoe.com/wp-content/uploads/2022/04/logo-white.png",
+  footerLogoUrl: "/logo-symbol.png",
   footerSlogan: "Build. Break. Repeat.",
   footerDescription: "I dive deep into human potential, lifestyle design, and one-person businesses to give you a unique, digestible way of improving your life.",
   footerRightCopy: "Gain A New Perspective On Life & Business",

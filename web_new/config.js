@@ -1,0 +1,4 @@
+window.REY_CMS_CONFIG = {
+  supabaseUrl: "https://xnvxbqxgixyeissvasuj.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhudnhicXhnaXh5ZWlzc3Zhc3VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MTEzNjksImV4cCI6MjA5NzA4NzM2OX0.xYcTzZmp1Y31pKINpVCcJQU_lltjEUDkw55KKMKWtS4",
+};
